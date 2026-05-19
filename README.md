@@ -23,6 +23,18 @@ npm run dev
 
 Ensure the backend is running on port 3001 before using the app.
 
+## Deploy on Vercel
+
+1. Push this frontend repo to GitHub.
+2. Import the repo in Vercel.
+3. Set `NEXT_PUBLIC_API_URL` to your deployed backend URL, for example:
+
+```bash
+NEXT_PUBLIC_API_URL=https://your-backend.onrender.com
+```
+
+4. Deploy. Vercel will use `npm run build` from `vercel.json`.
+
 ## Pages
 
 - `/login` — authentication
