@@ -12,12 +12,19 @@ import {
   LogOut,
   Settings,
   Activity,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { clearAuth, getUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { Button } from "@/components/ui/button";
+
+interface SidebarProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -30,7 +37,7 @@ const navItems = [
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
-export function Sidebar() {
+export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const user = getUser();
@@ -46,8 +53,32 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-zinc-200 bg-zinc-950 text-white dark:border-zinc-800">
-      <div className="border-b border-zinc-800 p-6">
+    <>
+      {/* Mobile overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          onClick={onClose}
+        />
+      )}
+      <aside
+        className={cn(
+          "fixed lg:static inset-y-0 left-0 z-50 flex h-screen w-64 flex-col border-r border-zinc-200 bg-zinc-950 text-white dark:border-zinc-800 transition-transform duration-300 ease-in-out lg:translate-x-0",
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        )}
+      >
+        {/* Mobile close button */}
+        <div className="lg:hidden absolute top-4 right-4">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={onClose}
+            className="text-zinc-400 hover:text-white hover:bg-zinc-800"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+      <div className="border-b border-zinc-800 p-6 pt-12 lg:pt-6">
         <h1 className="text-lg font-bold">Smart Inventory</h1>
         <p className="mt-1 text-xs text-zinc-400">ERP System</p>
       </div>
@@ -88,6 +119,7 @@ export function Sidebar() {
           Logout
         </button>
       </div>
-    </aside>
+      </aside>
+    </>
   );
 }
