@@ -193,6 +193,24 @@ export const api = {
       return res.blob();
     });
   },
+
+  // Activity Logs
+  getActivityLogs: (params?: {
+    userId?: string;
+    type?: string;
+    entityType?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const q = new URLSearchParams();
+    if (params?.userId) q.set("userId", params.userId);
+    if (params?.type) q.set("type", params.type);
+    if (params?.entityType) q.set("entityType", params.entityType);
+    if (params?.page) q.set("page", String(params.page));
+    if (params?.limit) q.set("limit", String(params.limit));
+    const qs = q.toString();
+    return request<ActivityLogsResponse>(`/api/activity-logs${qs ? `?${qs}` : ""}`);
+  },
 };
 
 export type Product = {
@@ -276,4 +294,27 @@ export type LowStockProduct = Product & { shortage: number };
 export type LowStockResponse = {
   data: LowStockProduct[];
   count: number;
+};
+
+export type ActivityLog = {
+  id: string;
+  userId: string;
+  user: { id: string; name: string; email: string };
+  type: "LOGIN" | "CREATE" | "UPDATE" | "DELETE" | "STOCK_IN" | "STOCK_OUT";
+  entityType: string | null;
+  entityId: string | null;
+  description: string;
+  metadata: string | null;
+  ipAddress: string | null;
+  createdAt: string;
+};
+
+export type ActivityLogsResponse = {
+  data: ActivityLog[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 };

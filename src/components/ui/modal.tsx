@@ -46,18 +46,21 @@ export function Modal({
         aria-modal
         aria-labelledby="modal-title"
         className={cn(
-          "relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-zinc-200 bg-white shadow-xl",
+          "relative z-10 max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border border-zinc-200 bg-white shadow-xl dark:border-zinc-800 dark:bg-zinc-900",
           className
         )}
       >
-        <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4">
-          <h2 id="modal-title" className="text-lg font-semibold text-zinc-900">
+        <div className="flex items-center justify-between border-b border-zinc-200 px-6 py-4 dark:border-zinc-800">
+          <h2
+            id="modal-title"
+            className="text-lg font-semibold text-zinc-900 dark:text-zinc-100"
+          >
             {title}
           </h2>
           <button
             type="button"
             onClick={onClose}
-            className="rounded-md p-1 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900"
+            className="rounded-md p-1 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
             aria-label="Close"
           >
             <X className="h-5 w-5" />

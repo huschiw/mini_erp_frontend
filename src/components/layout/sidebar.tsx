@@ -10,11 +10,14 @@ import {
   ArchiveX,
   History,
   LogOut,
+  Settings,
+  Activity,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { clearAuth, getUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -23,6 +26,8 @@ const navItems = [
   { href: "/stock-in", label: "Stock In", icon: ArchiveRestore },
   { href: "/stock-out", label: "Stock Out", icon: ArchiveX },
   { href: "/inventory-history", label: "Inventory History", icon: History },
+  { href: "/activity-logs", label: "Activity Logs", icon: Activity },
+  { href: "/settings", label: "Settings", icon: Settings },
 ];
 
 export function Sidebar() {
@@ -41,7 +46,7 @@ export function Sidebar() {
   }
 
   return (
-    <aside className="flex h-screen w-64 flex-col border-r border-zinc-200 bg-zinc-950 text-white">
+    <aside className="flex h-screen w-64 flex-col border-r border-zinc-200 bg-zinc-950 text-white dark:border-zinc-800">
       <div className="border-b border-zinc-800 p-6">
         <h1 className="text-lg font-bold">Smart Inventory</h1>
         <p className="mt-1 text-xs text-zinc-400">ERP System</p>
@@ -64,11 +69,17 @@ export function Sidebar() {
         ))}
       </nav>
       <div className="border-t border-zinc-800 p-4">
-        <p className="truncate text-sm font-medium">{user?.name}</p>
-        <p className="truncate text-xs text-zinc-400">{user?.email}</p>
-        <span className="mt-1 inline-block rounded bg-zinc-800 px-2 py-0.5 text-xs">
-          {user?.role}
-        </span>
+        <div className="flex items-center justify-between rounded-md bg-zinc-900 px-3 py-2">
+          <span className="text-sm text-zinc-300">Theme</span>
+          <ThemeToggle />
+        </div>
+        <div className="mt-3 border-t border-zinc-800 pt-3">
+          <p className="truncate text-sm font-medium">{user?.name}</p>
+          <p className="truncate text-xs text-zinc-400">{user?.email}</p>
+          <span className="mt-1 inline-block rounded bg-zinc-800 px-2 py-0.5 text-xs">
+            {user?.role}
+          </span>
+        </div>
         <button
           onClick={handleLogout}
           className="mt-3 flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-zinc-400 hover:bg-zinc-900 hover:text-white"

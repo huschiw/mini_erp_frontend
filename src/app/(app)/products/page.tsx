@@ -80,7 +80,8 @@ export default function ProductsPage() {
   );
 
   useEffect(() => {
-    loadCategories().catch(() => {});
+    const t = setTimeout(() => loadCategories().catch(() => {}), 0);
+    return () => clearTimeout(t);
   }, [loadCategories]);
 
   useEffect(() => {

@@ -1,9 +1,17 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #fafafa;
   --foreground: #18181b;
   color-scheme: light;
+}
+
+.dark {
+  --background: #09090b;
+  --foreground: #fafafa;
+  color-scheme: dark;
 }
 
 @theme inline {
@@ -17,4 +25,95 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+:where(
+  body,
+  main,
+  aside,
+  nav,
+  div,
+  table,
+  thead,
+  tbody,
+  tr,
+  th,
+  td,
+  button,
+  input,
+  select,
+  textarea,
+  a,
+  p,
+  span,
+  h1,
+  h2,
+  h3,
+  h4
+) {
+  transition-duration: 180ms;
+  transition-property: background-color, border-color, color, box-shadow;
+  transition-timing-function: ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :where(*) {
+    transition-duration: 0ms !important;
+  }
+}
+
+.dark :where(.bg-white, .bg-zinc-50) {
+  background-color: #18181b !important;
+}
+
+.dark :where(.bg-zinc-100) {
+  background-color: #27272a !important;
+}
+
+.dark :where(.border-zinc-100, .border-zinc-200, .border-zinc-300) {
+  border-color: #3f3f46 !important;
+}
+
+.dark :where(.text-zinc-900) {
+  color: #f4f4f5 !important;
+}
+
+.dark :where(.text-zinc-700, .text-zinc-600) {
+  color: #d4d4d8 !important;
+}
+
+.dark :where(.text-zinc-500) {
+  color: #b4b4be !important;
+}
+
+.dark :where(.bg-blue-50) {
+  background-color: color-mix(in srgb, #1e40af 26%, #18181b) !important;
+}
+
+.dark :where(.text-blue-600) {
+  color: #93c5fd !important;
+}
+
+.dark :where(.bg-green-50) {
+  background-color: color-mix(in srgb, #14532d 30%, #18181b) !important;
+}
+
+.dark :where(.text-green-600, .text-green-700, .text-green-900) {
+  color: #86efac !important;
+}
+
+.dark :where(.bg-red-50, .bg-red-100) {
+  background-color: color-mix(in srgb, #7f1d1d 34%, #18181b) !important;
+}
+
+.dark :where(.text-red-600, .text-red-700, .text-red-900) {
+  color: #fca5a5 !important;
+}
+
+.dark :where(.bg-purple-50) {
+  background-color: color-mix(in srgb, #581c87 30%, #18181b) !important;
+}
+
+.dark :where(.text-purple-600) {
+  color: #d8b4fe !important;
 }

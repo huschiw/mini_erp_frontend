@@ -10,6 +10,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { FieldError } from "@/components/ui/field-error";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { BarcodeScanButton } from "@/components/barcode-scanner";
 
 const schema = z.object({
   productId: z.string().min(1, "Product is required"),
@@ -31,6 +32,7 @@ export default function StockInPage() {
     register,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -54,6 +56,17 @@ export default function StockInPage() {
     const timer = setTimeout(() => loadProducts(), 0);
     return () => clearTimeout(timer);
   }, [loadProducts]);
+
+  // Handle barcode scan
+  const handleBarcodeScan = (barcode: string) => {
+    const product = products.find((p) => p.barcode === barcode);
+    if (product) {
+      setValue("productId", product.id);
+      setMessage(`Product found: ${product.name}`);
+    } else {
+      setError(`No product found with barcode: ${barcode}`);
+    }
+  };
 
   async function onSubmit(data: FormData) {
     setError(null);
@@ -84,10 +97,13 @@ export default function StockInPage() {
         <CardContent className="p-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="productId">Product</Label>
+              <div className="flex items-center justify-between">
+                <Label htmlFor="productId">Product</Label>
+                <BarcodeScanButton onScan={handleBarcodeScan} />
+              </div>
               <select
                 id="productId"
-                className="flex h-10 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900"
+                className="flex h-10 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 dark:bg-zinc-900 dark:text-white"
                 disabled={loading}
                 {...register("productId")}
               >

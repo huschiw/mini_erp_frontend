@@ -2,11 +2,13 @@ import { cn } from "@/lib/utils";
 import { ButtonHTMLAttributes, forwardRef } from "react";
 
 const variants = {
-  default: "bg-zinc-900 text-white hover:bg-zinc-800",
+  default:
+    "bg-zinc-900 text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200",
   outline:
-    "border border-zinc-300 bg-white hover:bg-zinc-50 text-zinc-900",
+    "border border-zinc-300 bg-white text-zinc-900 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800",
   destructive: "bg-red-600 text-white hover:bg-red-700",
-  ghost: "hover:bg-zinc-100 text-zinc-900",
+  ghost:
+    "text-zinc-900 hover:bg-zinc-100 dark:text-zinc-100 dark:hover:bg-zinc-800",
 };
 
 const sizes = {
