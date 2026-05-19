@@ -160,6 +160,39 @@ export const api = {
       };
     }>(`/api/inventory/movements${qs ? `?${qs}` : ""}`);
   },
+
+  // Dashboard
+  getDashboardSummary: () => request<DashboardSummary>("/api/dashboard/summary"),
+
+  // Low stock alerts
+  getLowStockProducts: (limit?: number) =>
+    request<LowStockResponse>(`/api/products/low-stock${limit ? `?limit=${limit}` : ""}`),
+
+  // Export
+  exportProductsCSV: () =>
+    fetch(`${API_URL}/api/reports/products/export`, {
+      headers: {
+        Authorization: `Bearer ${getToken() ?? ""}`,
+      },
+    }).then((res) => {
+      if (!res.ok) throw new Error("Export failed");
+      return res.blob();
+    }),
+
+  exportMovementsCSV: (params?: { from?: string; to?: string }) => {
+    const q = new URLSearchParams();
+    if (params?.from) q.set("from", params.from);
+    if (params?.to) q.set("to", params.to);
+    const qs = q.toString();
+    return fetch(`${API_URL}/api/reports/movements/export${qs ? `?${qs}` : ""}`, {
+      headers: {
+        Authorization: `Bearer ${getToken() ?? ""}`,
+      },
+    }).then((res) => {
+      if (!res.ok) throw new Error("Export failed");
+      return res.blob();
+    });
+  },
 };
 
 export type Product = {
@@ -217,4 +250,30 @@ export type InventoryMovement = {
   afterStock: number;
   creator: { id: string; name: string; email: string };
   createdAt: string;
+};
+
+export type DashboardSummary = {
+  overview: {
+    totalProducts: number;
+    totalCategories: number;
+    lowStockItems: number;
+    inventoryValue: number;
+  };
+  monthly: {
+    stockIn: number;
+    stockOut: number;
+  };
+  topProducts: Array<{
+    productId: string;
+    sku: string;
+    name: string;
+    totalQuantity: number;
+  }>;
+};
+
+export type LowStockProduct = Product & { shortage: number };
+
+export type LowStockResponse = {
+  data: LowStockProduct[];
+  count: number;
 };

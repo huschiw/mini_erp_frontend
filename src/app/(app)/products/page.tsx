@@ -16,7 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Modal } from "@/components/ui/modal";
-import { Pencil, Trash2, Plus, Search } from "lucide-react";
+import { Pencil, Trash2, Plus, Search, Download } from "lucide-react";
 
 type Category = { id: string; name: string };
 
@@ -161,6 +161,22 @@ export default function ProductsPage() {
     }
   }
 
+  async function handleExport() {
+    try {
+      const blob = await api.exportProductsCSV();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "products.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      setListError("Export failed");
+    }
+  }
+
   return (
     <div>
       <div className="flex items-center justify-between">
@@ -170,12 +186,18 @@ export default function ProductsPage() {
             {pagination.total} products total
           </p>
         </div>
-        {admin && (
-          <Button onClick={openCreate} disabled={categories.length === 0}>
-            <Plus className="mr-2 h-4 w-4" />
-            Add Product
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={handleExport}>
+            <Download className="mr-2 h-4 w-4" />
+            Export CSV
           </Button>
-        )}
+          {admin && (
+            <Button onClick={openCreate} disabled={categories.length === 0}>
+              <Plus className="mr-2 h-4 w-4" />
+              Add Product
+            </Button>
+          )}
+        </div>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-3">

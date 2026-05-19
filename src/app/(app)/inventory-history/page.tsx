@@ -5,6 +5,7 @@ import { api, ApiError, InventoryMovement, Product } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Download } from "lucide-react";
 
 export default function InventoryHistoryPage() {
   const [movements, setMovements] = useState<InventoryMovement[]>([]);
@@ -21,6 +22,23 @@ export default function InventoryHistoryPage() {
     const res = await api.getProducts({ limit: 100 });
     setProducts(res.data);
   }, []);
+
+  async function handleExport() {
+    setError(null);
+    try {
+      const blob = await api.exportMovementsCSV({ from: from || undefined, to: to || undefined });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "inventory-movements.csv";
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      window.URL.revokeObjectURL(url);
+    } catch {
+      setError("Export failed");
+    }
+  }
 
   const loadMovements = useCallback(
     async (nextPage = 1) => {
@@ -65,7 +83,7 @@ export default function InventoryHistoryPage() {
         <p className="mt-1 text-zinc-500">Track stock in and stock out movements</p>
       </div>
 
-      <div className="mt-4 grid gap-3 md:grid-cols-4">
+      <div className="mt-4 grid gap-3 md:grid-cols-5">
         <select
           className="h-10 rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900"
           value={productId}
@@ -81,6 +99,10 @@ export default function InventoryHistoryPage() {
         <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
         <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
         <Button onClick={() => loadMovements(1)}>Apply Filters</Button>
+        <Button variant="outline" onClick={handleExport}>
+          <Download className="mr-2 h-4 w-4" />
+          Export CSV
+        </Button>
       </div>
 
       {error && <p className="mt-4 rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</p>}
