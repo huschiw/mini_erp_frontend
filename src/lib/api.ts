@@ -123,6 +123,43 @@ export const api = {
 
   deleteProduct: (id: string) =>
     request(`/api/products/${id}`, { method: "DELETE" }),
+
+  stockIn: (data: StockInInput) =>
+    request("/api/stock/in", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  stockOut: (data: StockOutInput) =>
+    request("/api/stock/out", {
+      method: "POST",
+      body: JSON.stringify(data),
+    }),
+
+  getInventoryMovements: (params?: {
+    productId?: string;
+    from?: string;
+    to?: string;
+    page?: number;
+    limit?: number;
+  }) => {
+    const q = new URLSearchParams();
+    if (params?.productId) q.set("productId", params.productId);
+    if (params?.from) q.set("from", params.from);
+    if (params?.to) q.set("to", params.to);
+    if (params?.page) q.set("page", String(params.page));
+    if (params?.limit) q.set("limit", String(params.limit));
+    const qs = q.toString();
+    return request<{
+      data: InventoryMovement[];
+      pagination: {
+        page: number;
+        limit: number;
+        total: number;
+        totalPages: number;
+      };
+    }>(`/api/inventory/movements${qs ? `?${qs}` : ""}`);
+  },
 };
 
 export type Product = {
@@ -153,4 +190,31 @@ export type ProductInput = {
   costPrice: number;
   sellingPrice: number;
   imageUrl?: string | null;
+};
+
+export type StockInInput = {
+  productId: string;
+  quantity: number;
+  supplier?: string | null;
+  invoiceNumber?: string | null;
+  note?: string | null;
+};
+
+export type StockOutInput = {
+  productId: string;
+  quantity: number;
+  reason: "SALE" | "DAMAGE" | "INTERNAL";
+  note?: string | null;
+};
+
+export type InventoryMovement = {
+  id: string;
+  productId: string;
+  product: { id: string; sku: string; name: string };
+  type: "STOCK_IN" | "STOCK_OUT" | "ADJUSTMENT";
+  quantity: number;
+  beforeStock: number;
+  afterStock: number;
+  creator: { id: string; name: string; email: string };
+  createdAt: string;
 };

@@ -6,6 +6,9 @@ import {
   LayoutDashboard,
   Package,
   FolderTree,
+  ArchiveRestore,
+  ArchiveX,
+  History,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -17,6 +20,9 @@ const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/products", label: "Products", icon: Package },
   { href: "/categories", label: "Categories", icon: FolderTree },
+  { href: "/stock-in", label: "Stock In", icon: ArchiveRestore },
+  { href: "/stock-out", label: "Stock Out", icon: ArchiveX },
+  { href: "/inventory-history", label: "Inventory History", icon: History },
 ];
 
 export function Sidebar() {
