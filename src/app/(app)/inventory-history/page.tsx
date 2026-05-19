@@ -26,7 +26,8 @@ export default function InventoryHistoryPage() {
   async function handleExport() {
     setError(null);
     try {
-      const blob = await api.exportMovementsCSV({ from: from || undefined, to: to || undefined });
+      const response = await api.exportMovementsCSV({ from: from || undefined, to: to || undefined });
+      const blob = new Blob([response], { type: "text/csv;charset=utf-8" });
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = url;
