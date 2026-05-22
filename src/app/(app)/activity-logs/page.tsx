@@ -32,7 +32,7 @@ export default function ActivityLogsPage() {
         const res = await api.getActivityLogs({
           type: filterType || undefined,
           page: nextPage,
-          limit: 20,
+          limit: 10,
         });
         setLogs(res.data);
         setPage(res.pagination.page);
@@ -141,8 +141,7 @@ export default function ActivityLogsPage() {
         </CardContent>
       </Card>
 
-      {totalPages > 1 && (
-        <div className="mt-4 flex items-center justify-center gap-2">
+      <div className="mt-4 flex items-center justify-center gap-2">
           <Button
             variant="outline"
             size="sm"
@@ -163,7 +162,6 @@ export default function ActivityLogsPage() {
             {t.activityLogs.next}
           </Button>
         </div>
-      )}
     </div>
   );
 }
