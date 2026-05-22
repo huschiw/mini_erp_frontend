@@ -1,5 +1,7 @@
 const TOKEN_KEY = "mini_erp_token";
 const USER_KEY = "mini_erp_user";
+const LOGIN_AT_KEY = "mini_erp_login_at";
+const SESSION_DURATION_MS = 5 * 60 * 60 * 1000;
 
 export type AuthUser = {
   id: string;
@@ -16,6 +18,14 @@ export function getToken(): string | null {
 export function setAuth(token: string, user: AuthUser) {
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.setItem(USER_KEY, JSON.stringify(user));
+  localStorage.setItem(LOGIN_AT_KEY, Date.now().toString());
+}
+
+export function isSessionExpired(): boolean {
+  if (typeof window === "undefined") return false;
+  const loginAt = localStorage.getItem(LOGIN_AT_KEY);
+  if (!loginAt) return true;
+  return Date.now() - parseInt(loginAt, 10) > SESSION_DURATION_MS;
 }
 
 export function getUser(): AuthUser | null {
@@ -32,6 +42,7 @@ export function getUser(): AuthUser | null {
 export function clearAuth() {
   localStorage.removeItem(TOKEN_KEY);
   localStorage.removeItem(USER_KEY);
+  localStorage.removeItem(LOGIN_AT_KEY);
 }
 
 export function isAdmin(user: AuthUser | null) {

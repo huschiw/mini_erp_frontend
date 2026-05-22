@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -32,11 +32,16 @@ export default function LoginPage() {
   const {
     register,
     handleSubmit,
+    resetField,
     formState: { errors, isSubmitting },
   } = useForm<LoginForm>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: "", password: "" },
   });
+
+  useEffect(() => {
+    resetField("password");
+  }, [resetField]);
 
   async function onSubmit(data: LoginForm) {
     setError(null);
@@ -46,6 +51,7 @@ export default function LoginPage() {
       router.push("/dashboard");
     } catch (e) {
       setError(e instanceof ApiError ? e.message : "Login failed");
+      resetField("password");
     }
   }
 
@@ -77,7 +83,7 @@ export default function LoginPage() {
                 id="password"
                 type="password"
                 placeholder="Enter your password"
-                autoComplete="current-password"
+                autoComplete="new-password"
                 {...register("password")}
               />
               {errors.password && (
