@@ -95,9 +95,6 @@ export default function LoginPage() {
               {isSubmitting ? "Signing in..." : "Sign in"}
             </Button>
           </form>
-          <p className="mt-4 text-center text-xs text-zinc-500">
-            Demo: admin@erp.com / admin123
-          </p>
         </CardContent>
       </Card>
     </div>

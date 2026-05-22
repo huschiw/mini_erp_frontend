@@ -107,9 +107,6 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <div className="mt-3 border-t border-zinc-200 dark:border-zinc-800 pt-3">
           <p className="truncate text-sm font-medium">{user?.name}</p>
           <p className="truncate text-xs text-zinc-500 dark:text-zinc-400">{user?.email}</p>
-          <span className="mt-1 inline-block rounded bg-zinc-200 dark:bg-zinc-800 px-2 py-0.5 text-xs">
-            {user?.role}
-          </span>
         </div>
         <button
           onClick={handleLogout}

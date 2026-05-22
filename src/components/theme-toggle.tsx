@@ -25,10 +25,10 @@ export function ThemeToggle() {
       onClick={toggleTheme}
       title={isDark ? "Switch to light theme" : "Switch to dark theme"}
       aria-label={isDark ? "Switch to light theme" : "Switch to dark theme"}
-      className="relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 bg-zinc-300 dark:bg-zinc-600"
+      className="theme-switch relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-500 bg-zinc-300 dark:bg-zinc-600"
     >
       <span
-        className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-sm transition-transform duration-200 ${
+        className={`inline-flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-sm transition-transform duration-300 ease-in-out ${
           isDark ? "translate-x-5" : "translate-x-0.5"
         }`}
       >

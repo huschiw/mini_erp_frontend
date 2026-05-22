@@ -62,6 +62,12 @@ body {
   }
 }
 
+.theme-switch,
+.theme-switch span {
+  transition-duration: 300ms !important;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
 .dark :where(.bg-white, .bg-zinc-50) {
   background-color: #18181b !important;
 }
