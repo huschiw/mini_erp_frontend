@@ -69,15 +69,15 @@ export default function ActivityLogsPage() {
           value={filterType}
           onChange={(e) => setFilterType(e.target.value)}
         >
-          <option value="">All types</option>
-          <option value="LOGIN">Login</option>
-          <option value="CREATE">Create</option>
-          <option value="UPDATE">Update</option>
-          <option value="DELETE">Delete</option>
-          <option value="STOCK_IN">Stock In</option>
-          <option value="STOCK_OUT">Stock Out</option>
+          <option value="">{t.activityLogs.allTypes}</option>
+          <option value="LOGIN">{t.activityLogs.typeLogin}</option>
+          <option value="CREATE">{t.activityLogs.typeCreate}</option>
+          <option value="UPDATE">{t.activityLogs.typeUpdate}</option>
+          <option value="DELETE">{t.activityLogs.typeDelete}</option>
+          <option value="STOCK_IN">{t.activityLogs.typeStockIn}</option>
+          <option value="STOCK_OUT">{t.activityLogs.typeStockOut}</option>
         </select>
-        <Button onClick={() => loadLogs(1)}>Apply Filter</Button>
+        <Button onClick={() => loadLogs(1)}>{t.activityLogs.applyFilter}</Button>
       </div>
 
       {error && (

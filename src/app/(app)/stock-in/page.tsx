@@ -131,8 +131,8 @@ export default function StockInPage() {
                 <Input id="supplier" placeholder={t.stockIn.supplierPlaceholder} {...register("supplier")} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="invoiceNumber">Invoice Number</Label>
-                <Input id="invoiceNumber" placeholder="Optional invoice" {...register("invoiceNumber")} />
+                <Label htmlFor="invoiceNumber">{t.stockIn.invoiceNumber}</Label>
+                <Input id="invoiceNumber" placeholder={t.stockIn.invoicePlaceholder} {...register("invoiceNumber")} />
               </div>
             </div>
 
