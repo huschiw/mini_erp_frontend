@@ -5,6 +5,7 @@ import { api, ApiError, ActivityLog } from "@/lib/api";
 import { useTranslation, interpolate } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const activityTypeColors: Record<string, string> = {
   LOGIN: "bg-blue-100 text-blue-700",
@@ -141,27 +142,29 @@ export default function ActivityLogsPage() {
         </CardContent>
       </Card>
 
-      <div className="mt-4 flex items-center justify-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
+      <div className="mt-4 flex items-center justify-end gap-2">
+        <span className="text-sm text-zinc-500 dark:text-zinc-400">
+          {interpolate(t.activityLogs.page, { page, total: totalPages })}
+        </span>
+        <div className="flex items-center rounded-md border border-zinc-200 dark:border-zinc-700 overflow-hidden">
+          <button
             disabled={page <= 1 || loading}
             onClick={() => loadLogs(page - 1)}
+            className="flex items-center gap-1 px-3 py-1.5 text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors border-r border-zinc-200 dark:border-zinc-700"
           >
+            <ChevronLeft className="h-4 w-4" />
             {t.activityLogs.prev}
-          </Button>
-          <span className="text-sm text-zinc-500 dark:text-zinc-400">
-            {interpolate(t.activityLogs.page, { page, total: totalPages })}
-          </span>
-          <Button
-            variant="outline"
-            size="sm"
+          </button>
+          <button
             disabled={page >= totalPages || loading}
             onClick={() => loadLogs(page + 1)}
+            className="flex items-center gap-1 px-3 py-1.5 text-sm text-zinc-600 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
           >
             {t.activityLogs.next}
-          </Button>
+            <ChevronRight className="h-4 w-4" />
+          </button>
         </div>
+      </div>
     </div>
   );
 }
