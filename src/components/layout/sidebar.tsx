@@ -20,27 +20,29 @@ import { useRouter } from "next/navigation";
 import { api } from "@/lib/api";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
+import { useTranslation } from "@/lib/i18n";
 
 interface SidebarProps {
   isOpen?: boolean;
   onClose?: () => void;
 }
 
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/products", label: "Products", icon: Package },
-  { href: "/categories", label: "Categories", icon: FolderTree },
-  { href: "/stock-in", label: "Stock In", icon: ArchiveRestore },
-  { href: "/stock-out", label: "Stock Out", icon: ArchiveX },
-  { href: "/inventory-history", label: "Inventory History", icon: History },
-  { href: "/activity-logs", label: "Activity Logs", icon: Activity },
-  { href: "/settings", label: "Settings", icon: Settings },
+const navKeys = [
+  { href: "/dashboard", key: "dashboard" as const, icon: LayoutDashboard },
+  { href: "/products", key: "products" as const, icon: Package },
+  { href: "/categories", key: "categories" as const, icon: FolderTree },
+  { href: "/stock-in", key: "stockIn" as const, icon: ArchiveRestore },
+  { href: "/stock-out", key: "stockOut" as const, icon: ArchiveX },
+  { href: "/inventory-history", key: "inventoryHistory" as const, icon: History },
+  { href: "/activity-logs", key: "activityLogs" as const, icon: Activity },
+  { href: "/settings", key: "settings" as const, icon: Settings },
 ];
 
 export function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
   const user = getUser();
+  const { t, lang, setLang } = useTranslation();
 
   async function handleLogout() {
     try {
@@ -83,10 +85,11 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
         <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">ERP System</p>
       </div>
       <nav className="flex-1 space-y-1 p-4">
-        {navItems.map(({ href, label, icon: Icon }) => (
+        {navKeys.map(({ href, key, icon: Icon }) => (
           <Link
             key={href}
             href={href}
+            onClick={onClose}
             className={cn(
               "flex items-center gap-3 rounded-md px-3 py-2 text-sm transition-colors",
               pathname === href
@@ -95,14 +98,41 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
             )}
           >
             <Icon className="h-4 w-4" />
-            {label}
+            {t.nav[key]}
           </Link>
         ))}
       </nav>
       <div className="border-t border-zinc-200 dark:border-zinc-800 p-4">
         <div className="flex items-center justify-between rounded-md bg-zinc-100 dark:bg-zinc-900 px-3 py-2">
-          <span className="text-sm text-zinc-600 dark:text-zinc-300">Theme</span>
+          <span className="text-sm text-zinc-600 dark:text-zinc-300">{t.common.theme}</span>
           <ThemeToggle />
+        </div>
+        <div className="mt-2 flex items-center justify-between rounded-md bg-zinc-100 dark:bg-zinc-900 px-3 py-2">
+          <span className="text-sm text-zinc-600 dark:text-zinc-300">{t.common.language}</span>
+          <div className="flex gap-1">
+            <button
+              onClick={() => setLang("th")}
+              className={cn(
+                "rounded px-2 py-0.5 text-xs font-medium transition-colors",
+                lang === "th"
+                  ? "bg-zinc-800 text-white dark:bg-white dark:text-zinc-900"
+                  : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+              )}
+            >
+              TH
+            </button>
+            <button
+              onClick={() => setLang("en")}
+              className={cn(
+                "rounded px-2 py-0.5 text-xs font-medium transition-colors",
+                lang === "en"
+                  ? "bg-zinc-800 text-white dark:bg-white dark:text-zinc-900"
+                  : "text-zinc-500 hover:text-zinc-900 dark:hover:text-white"
+              )}
+            >
+              EN
+            </button>
+          </div>
         </div>
         <div className="mt-3 border-t border-zinc-200 dark:border-zinc-800 pt-3">
           <p className="truncate text-sm font-medium">{user?.name}</p>
@@ -113,7 +143,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
           className="mt-3 flex w-full items-center gap-2 rounded-md px-3 py-2 text-sm text-zinc-500 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-900 dark:hover:text-white"
         >
           <LogOut className="h-4 w-4" />
-          Logout
+          {t.common.logout}
         </button>
       </div>
       </aside>

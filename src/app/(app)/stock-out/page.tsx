@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api, ApiError, Product } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FieldError } from "@/components/ui/field-error";
@@ -21,6 +22,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function StockOutPage() {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
@@ -59,7 +61,7 @@ export default function StockOutPage() {
     setMessage(null);
     try {
       await api.stockOut({ ...data, note: data.note || null });
-      setMessage("Stock issued successfully");
+      setMessage(t.stockOut.success);
       reset({ productId: "", quantity: 1, reason: "SALE", note: "" });
       await loadProducts();
     } catch (e) {
@@ -70,22 +72,22 @@ export default function StockOutPage() {
   return (
     <div>
       <div>
-        <h1 className="text-2xl font-bold text-zinc-900">Stock Out</h1>
-        <p className="mt-1 text-zinc-500">Issue products and reduce inventory stock</p>
+        <h1 className="text-2xl font-bold text-zinc-900">{t.stockOut.title}</h1>
+        <p className="mt-1 text-zinc-500">{t.stockOut.subtitle}</p>
       </div>
 
       <Card className="mt-6 max-w-2xl">
         <CardContent className="p-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="productId">Product</Label>
+              <Label htmlFor="productId">{t.stockOut.product}</Label>
               <select
                 id="productId"
                 className="flex h-10 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900"
                 disabled={loading}
                 {...register("productId")}
               >
-                <option value="">Select product</option>
+                <option value="">{t.stockOut.selectProduct}</option>
                 {products.map((product) => (
                   <option key={product.id} value={product.id}>
                     {product.sku} — {product.name} (stock: {product.stock})
@@ -97,34 +99,34 @@ export default function StockOutPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="quantity">Quantity</Label>
+                <Label htmlFor="quantity">{t.stockOut.quantity}</Label>
                 <Input id="quantity" type="number" min={1} step={1} {...register("quantity", { valueAsNumber: true })} />
                 <FieldError message={errors.quantity?.message} />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="reason">Reason</Label>
+                <Label htmlFor="reason">{t.stockOut.reason}</Label>
                 <select
                   id="reason"
                   className="flex h-10 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900"
                   {...register("reason")}
                 >
-                  <option value="SALE">Sale</option>
-                  <option value="DAMAGE">Damage</option>
-                  <option value="INTERNAL">Internal</option>
+                  <option value="SALE">{t.stockOut.sale}</option>
+                  <option value="DAMAGE">{t.stockOut.damage}</option>
+                  <option value="INTERNAL">{t.stockOut.internal}</option>
                 </select>
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="note">Note</Label>
-              <Input id="note" placeholder="Optional note" {...register("note")} />
+              <Label htmlFor="note">{t.stockOut.note}</Label>
+              <Input id="note" placeholder={t.stockOut.notePlaceholder} {...register("note")} />
             </div>
 
             {message && <p className="rounded-md bg-green-50 p-3 text-sm text-green-700">{message}</p>}
             {error && <p className="rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</p>}
 
             <Button type="submit" disabled={isSubmitting || loading}>
-              {isSubmitting ? "Saving..." : "Issue Stock"}
+              {isSubmitting ? t.stockOut.submitting : t.stockOut.submit}
             </Button>
           </form>
         </CardContent>

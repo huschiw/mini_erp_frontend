@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { api, ApiError, ActivityLog } from "@/lib/api";
+import { useTranslation, interpolate } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
@@ -15,6 +16,7 @@ const activityTypeColors: Record<string, string> = {
 };
 
 export default function ActivityLogsPage() {
+  const { t } = useTranslation();
   const [logs, setLogs] = useState<ActivityLog[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -53,11 +55,11 @@ export default function ActivityLogsPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Activity Logs</h1>
-          <p className="mt-1 text-zinc-500">Track user activities and system events</p>
+          <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">{t.activityLogs.title}</h1>
+          <p className="mt-1 text-zinc-500">{t.activityLogs.subtitle}</p>
         </div>
         <Button variant="outline" onClick={() => loadLogs(1)} disabled={loading}>
-          {loading ? "Refreshing..." : "Refresh"}
+          {loading ? t.common.refreshing : t.common.refresh}
         </Button>
       </div>
 
@@ -87,18 +89,18 @@ export default function ActivityLogsPage() {
       <Card className="mt-6">
         <CardContent className="overflow-x-auto p-0">
           {loading ? (
-            <p className="p-6 text-zinc-500">Loading...</p>
+            <p className="p-6 text-zinc-500">{t.common.loading}</p>
           ) : logs.length === 0 ? (
-            <p className="p-6 text-zinc-500">No activity logs found.</p>
+            <p className="p-6 text-zinc-500">{t.activityLogs.noLogs}</p>
           ) : (
             <table className="w-full min-w-[900px] text-sm">
               <thead>
                 <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-zinc-600 dark:border-zinc-800 dark:bg-zinc-900 dark:text-zinc-400">
-                  <th className="px-4 py-3 font-semibold">Time</th>
-                  <th className="px-4 py-3 font-semibold">User</th>
-                  <th className="px-4 py-3 font-semibold">Type</th>
-                  <th className="px-4 py-3 font-semibold">Description</th>
-                  <th className="px-4 py-3 font-semibold">Entity</th>
+                  <th className="px-4 py-3 font-semibold">{t.activityLogs.date}</th>
+                  <th className="px-4 py-3 font-semibold">{t.activityLogs.user}</th>
+                  <th className="px-4 py-3 font-semibold">{t.activityLogs.type}</th>
+                  <th className="px-4 py-3 font-semibold">{t.activityLogs.description}</th>
+                  <th className="px-4 py-3 font-semibold">{t.activityLogs.ip}</th>
                 </tr>
               </thead>
               <tbody>
@@ -147,10 +149,10 @@ export default function ActivityLogsPage() {
             disabled={page <= 1 || loading}
             onClick={() => loadLogs(page - 1)}
           >
-            Previous
+            {t.activityLogs.prev}
           </Button>
           <span className="text-sm text-zinc-500 dark:text-zinc-400">
-            Page {page} of {totalPages}
+            {interpolate(t.activityLogs.page, { page, total: totalPages })}
           </span>
           <Button
             variant="outline"
@@ -158,7 +160,7 @@ export default function ActivityLogsPage() {
             disabled={page >= totalPages || loading}
             onClick={() => loadLogs(page + 1)}
           >
-            Next
+            {t.activityLogs.next}
           </Button>
         </div>
       )}

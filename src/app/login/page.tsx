@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api, ApiError } from "@/lib/api";
 import { setAuth } from "@/lib/auth";
+import { useTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +29,7 @@ type LoginForm = z.infer<typeof loginSchema>;
 export default function LoginPage() {
   const router = useRouter();
   const [error, setError] = useState<string | null>(null);
+  const { t } = useTranslation();
 
   const {
     register,
@@ -59,17 +61,17 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-zinc-100 p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>Smart Inventory ERP</CardTitle>
-          <CardDescription>Sign in to your account</CardDescription>
+          <CardTitle>{t.login.title}</CardTitle>
+          <CardDescription>{t.login.subtitle}</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t.login.email}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@erp.com"
+                placeholder={t.login.emailPlaceholder}
                 autoComplete="email"
                 {...register("email")}
               />
@@ -78,11 +80,11 @@ export default function LoginPage() {
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password">{t.login.password}</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder={t.login.passwordPlaceholder}
                 autoComplete="new-password"
                 {...register("password")}
               />
@@ -98,7 +100,7 @@ export default function LoginPage() {
               </p>
             )}
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Signing in..." : "Sign in"}
+              {isSubmitting ? t.login.submitting : t.login.submit}
             </Button>
           </form>
         </CardContent>

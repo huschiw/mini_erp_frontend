@@ -2,16 +2,18 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { getUser } from "@/lib/auth";
+import { useTranslation } from "@/lib/i18n";
 import { User, Mail, Shield } from "lucide-react";
 
 export default function SettingsPage() {
   const user = getUser();
+  const { t } = useTranslation();
 
   return (
     <div>
       <div>
-        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">Settings</h1>
-        <p className="mt-1 text-zinc-500">Manage your account and preferences</p>
+        <h1 className="text-2xl font-bold text-zinc-900 dark:text-white">{t.settings.title}</h1>
+        <p className="mt-1 text-zinc-500">{t.settings.subtitle}</p>
       </div>
 
       <div className="mt-6 grid gap-6">
@@ -19,7 +21,7 @@ export default function SettingsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-lg">
               <User className="h-5 w-5" />
-              Profile Information
+              {t.settings.profile}
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
@@ -35,7 +37,7 @@ export default function SettingsPage() {
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-1">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Name</label>
+                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t.settings.name}</label>
                 <div className="flex items-center gap-2 rounded-md border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900">
                   <User className="h-4 w-4 text-zinc-400" />
                   <span className="text-zinc-900 dark:text-white">{user?.name}</span>
@@ -43,7 +45,7 @@ export default function SettingsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Email</label>
+                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t.settings.email}</label>
                 <div className="flex items-center gap-2 rounded-md border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900">
                   <Mail className="h-4 w-4 text-zinc-400" />
                   <span className="text-zinc-900 dark:text-white">{user?.email}</span>
@@ -51,7 +53,7 @@ export default function SettingsPage() {
               </div>
 
               <div className="space-y-1">
-                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">Role</label>
+                <label className="text-sm font-medium text-zinc-700 dark:text-zinc-300">{t.settings.role}</label>
                 <div className="flex items-center gap-2 rounded-md border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900">
                   <Shield className="h-4 w-4 text-zinc-400" />
                   <span className="text-zinc-900 dark:text-white">{user?.role}</span>
@@ -63,7 +65,7 @@ export default function SettingsPage() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="text-lg">Application Info</CardTitle>
+            <CardTitle className="text-lg">{t.settings.appInfo}</CardTitle>
           </CardHeader>
           <CardContent className="space-y-2 text-sm text-zinc-600 dark:text-zinc-400">
             <p>Smart Inventory ERP System</p>

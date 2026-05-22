@@ -11,6 +11,7 @@ import {
 import { FieldError } from "@/components/ui/field-error";
 import { formatBaht } from "@/lib/utils";
 import { isAdmin, getUser } from "@/lib/auth";
+import { useTranslation, interpolate } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -23,6 +24,7 @@ type Category = { id: string; name: string };
 export default function ProductsPage() {
   const user = getUser();
   const admin = isAdmin(user);
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [pagination, setPagination] = useState({
@@ -183,20 +185,20 @@ export default function ProductsPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900">Products</h1>
+          <h1 className="text-2xl font-bold text-zinc-900">{t.products.title}</h1>
           <p className="mt-1 text-zinc-500">
-            {pagination.total} products total
+            {pagination.total} {t.products.title.toLowerCase()}
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" onClick={handleExport}>
             <Download className="mr-2 h-4 w-4" />
-            Export CSV
+            {t.common.export}
           </Button>
           {admin && (
             <Button onClick={openCreate} disabled={categories.length === 0}>
               <Plus className="mr-2 h-4 w-4" />
-              Add Product
+              {t.products.addProduct}
             </Button>
           )}
         </div>
@@ -207,7 +209,7 @@ export default function ProductsPage() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
           <Input
             className="pl-9"
-            placeholder="Search SKU, name, barcode..."
+            placeholder={t.products.searchPlaceholder}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
           />
@@ -217,7 +219,7 @@ export default function ProductsPage() {
           value={categoryFilter}
           onChange={(e) => setCategoryFilter(e.target.value)}
         >
-          <option value="">All categories</option>
+          <option value="">{t.products.allCategories}</option>
           {categories.map((c) => (
             <option key={c.id} value={c.id}>
               {c.name}
@@ -235,7 +237,7 @@ export default function ProductsPage() {
       <Modal
         open={modalOpen}
         onClose={closeModal}
-        title={editing ? "Edit Product" : "New Product"}
+        title={editing ? t.products.editProduct : t.products.addProduct}
         className="max-w-2xl"
       >
         <form
@@ -243,29 +245,29 @@ export default function ProductsPage() {
           className="grid gap-4 sm:grid-cols-2"
         >
           <div className="space-y-2">
-            <Label htmlFor="sku">SKU</Label>
-            <Input id="sku" placeholder="e.g. SKU-001" {...register("sku")} />
+            <Label htmlFor="sku">{t.products.sku}</Label>
+            <Input id="sku" placeholder={t.products.skuPlaceholder} {...register("sku")} />
             <FieldError message={errors.sku?.message} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="barcode">Barcode</Label>
+            <Label htmlFor="barcode">{t.products.barcode}</Label>
             <Input
               id="barcode"
-              placeholder="Optional barcode"
+              placeholder={t.products.barcodePlaceholder}
               {...register("barcode")}
             />
           </div>
           <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{t.products.name}</Label>
             <Input
               id="name"
-              placeholder="Product name"
+              placeholder={t.products.namePlaceholder}
               {...register("name")}
             />
             <FieldError message={errors.name?.message} />
           </div>
           <div className="space-y-2 sm:col-span-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t.common.description}</Label>
             <Input
               id="description"
               placeholder="Optional description"
@@ -273,7 +275,7 @@ export default function ProductsPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="categoryId">Category</Label>
+            <Label htmlFor="categoryId">{t.products.category}</Label>
             <select
               id="categoryId"
               className="flex h-10 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900"
@@ -295,7 +297,7 @@ export default function ProductsPage() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="stock">Stock</Label>
+            <Label htmlFor="stock">{t.products.stock}</Label>
             <Input
               id="stock"
               type="number"
@@ -307,7 +309,7 @@ export default function ProductsPage() {
             <FieldError message={errors.stock?.message} />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="minimumStock">Minimum Stock</Label>
+            <Label htmlFor="minimumStock">{t.products.minStock}</Label>
             <Input
               id="minimumStock"
               type="number"
@@ -349,10 +351,10 @@ export default function ProductsPage() {
           )}
           <div className="flex justify-end gap-2 sm:col-span-2">
             <Button type="button" variant="outline" onClick={closeModal}>
-              Cancel
+              {t.common.cancel}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save"}
+              {isSubmitting ? t.common.saving : t.common.save}
             </Button>
           </div>
         </form>
@@ -361,21 +363,21 @@ export default function ProductsPage() {
       <Card className="mt-6">
         <CardContent className="overflow-x-auto p-0">
           {loading ? (
-            <p className="p-6 text-zinc-500">Loading...</p>
+            <p className="p-6 text-zinc-500">{t.common.loading}</p>
           ) : products.length === 0 ? (
-            <p className="p-6 text-zinc-500">No products found.</p>
+            <p className="p-6 text-zinc-500">{t.products.noProducts}</p>
           ) : (
             <table className="w-full min-w-[800px] text-sm text-zinc-900">
               <thead>
                 <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-zinc-600">
-                  <th className="px-4 py-3 font-semibold">SKU</th>
-                  <th className="px-4 py-3 font-semibold">Name</th>
-                  <th className="px-4 py-3 font-semibold">Category</th>
-                  <th className="px-4 py-3 font-semibold">Stock</th>
-                  <th className="px-4 py-3 font-semibold">Price</th>
+                  <th className="px-4 py-3 font-semibold">{t.products.sku}</th>
+                  <th className="px-4 py-3 font-semibold">{t.products.name}</th>
+                  <th className="px-4 py-3 font-semibold">{t.products.category}</th>
+                  <th className="px-4 py-3 font-semibold">{t.products.stock}</th>
+                  <th className="px-4 py-3 font-semibold">{t.products.price}</th>
                   {admin && (
                     <th className="px-4 py-3 text-right font-semibold">
-                      Actions
+                      {t.common.actions}
                     </th>
                   )}
                 </tr>
@@ -443,10 +445,10 @@ export default function ProductsPage() {
             disabled={pagination.page <= 1}
             onClick={() => loadProducts(pagination.page - 1)}
           >
-            Previous
+            {t.products.prev}
           </Button>
           <span className="text-sm text-zinc-500">
-            Page {pagination.page} of {pagination.totalPages}
+            {interpolate(t.products.page, { page: pagination.page, total: pagination.totalPages })}
           </span>
           <Button
             variant="outline"
@@ -454,7 +456,7 @@ export default function ProductsPage() {
             disabled={pagination.page >= pagination.totalPages}
             onClick={() => loadProducts(pagination.page + 1)}
           >
-            Next
+            {t.products.next}
           </Button>
         </div>
       )}

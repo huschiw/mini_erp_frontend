@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api, ApiError, Product } from "@/lib/api";
+import { useTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { FieldError } from "@/components/ui/field-error";
@@ -23,6 +24,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function StockInPage() {
+  const { t } = useTranslation();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState<string | null>(null);
@@ -78,7 +80,7 @@ export default function StockInPage() {
         invoiceNumber: data.invoiceNumber || null,
         note: data.note || null,
       });
-      setMessage("Stock received successfully");
+      setMessage(t.stockIn.success);
       reset({ productId: "", quantity: 1, supplier: "", invoiceNumber: "", note: "" });
       await loadProducts();
     } catch (e) {
@@ -89,8 +91,8 @@ export default function StockInPage() {
   return (
     <div>
       <div>
-        <h1 className="text-2xl font-bold text-zinc-900">Stock In</h1>
-        <p className="mt-1 text-zinc-500">Receive products and increase inventory stock</p>
+        <h1 className="text-2xl font-bold text-zinc-900">{t.stockIn.title}</h1>
+        <p className="mt-1 text-zinc-500">{t.stockIn.subtitle}</p>
       </div>
 
       <Card className="mt-6 max-w-2xl">
@@ -98,7 +100,7 @@ export default function StockInPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="productId">Product</Label>
+                <Label htmlFor="productId">{t.stockIn.product}</Label>
                 <BarcodeScanButton onScan={handleBarcodeScan} />
               </div>
               <select
@@ -107,7 +109,7 @@ export default function StockInPage() {
                 disabled={loading}
                 {...register("productId")}
               >
-                <option value="">Select product</option>
+                <option value="">{t.stockIn.selectProduct}</option>
                 {products.map((product) => (
                   <option key={product.id} value={product.id}>
                     {product.sku} — {product.name} (stock: {product.stock})
@@ -118,15 +120,15 @@ export default function StockInPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="quantity">Quantity</Label>
+              <Label htmlFor="quantity">{t.stockIn.quantity}</Label>
               <Input id="quantity" type="number" min={1} step={1} {...register("quantity", { valueAsNumber: true })} />
               <FieldError message={errors.quantity?.message} />
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label htmlFor="supplier">Supplier</Label>
-                <Input id="supplier" placeholder="Optional supplier" {...register("supplier")} />
+                <Label htmlFor="supplier">{t.stockIn.supplier}</Label>
+                <Input id="supplier" placeholder={t.stockIn.supplierPlaceholder} {...register("supplier")} />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="invoiceNumber">Invoice Number</Label>
@@ -135,15 +137,15 @@ export default function StockInPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="note">Note</Label>
-              <Input id="note" placeholder="Optional note" {...register("note")} />
+              <Label htmlFor="note">{t.stockIn.note}</Label>
+              <Input id="note" placeholder={t.stockIn.notePlaceholder} {...register("note")} />
             </div>
 
             {message && <p className="rounded-md bg-green-50 p-3 text-sm text-green-700">{message}</p>}
             {error && <p className="rounded-md bg-red-50 p-3 text-sm text-red-600">{error}</p>}
 
             <Button type="submit" disabled={isSubmitting || loading}>
-              {isSubmitting ? "Saving..." : "Receive Stock"}
+              {isSubmitting ? t.stockIn.submitting : t.stockIn.submit}
             </Button>
           </form>
         </CardContent>

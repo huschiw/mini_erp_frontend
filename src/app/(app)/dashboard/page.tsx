@@ -3,12 +3,14 @@
 import { useCallback, useEffect, useState } from "react";
 import { api, ApiError, DashboardSummary, LowStockProduct } from "@/lib/api";
 import { getUser } from "@/lib/auth";
+import { useTranslation, interpolate } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Package, FolderTree, AlertTriangle, TrendingUp, TrendingDown, DollarSign } from "lucide-react";
 
 export default function DashboardPage() {
   const user = getUser();
+  const { t } = useTranslation();
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [lowStockProducts, setLowStockProducts] = useState<LowStockProduct[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,28 +41,28 @@ export default function DashboardPage() {
   const overviewCards = summary?.overview
     ? [
         {
-          title: "Total Products",
+          title: t.dashboard.totalProducts,
           value: summary.overview.totalProducts,
           icon: Package,
           color: "text-blue-600",
           bgColor: "bg-blue-50",
         },
         {
-          title: "Categories",
+          title: t.dashboard.categories,
           value: summary.overview.totalCategories,
           icon: FolderTree,
           color: "text-green-600",
           bgColor: "bg-green-50",
         },
         {
-          title: "Low Stock Items",
+          title: t.dashboard.lowStockItems,
           value: summary.overview.lowStockItems,
           icon: AlertTriangle,
           color: "text-red-600",
           bgColor: "bg-red-50",
         },
         {
-          title: "Inventory Value",
+          title: t.dashboard.inventoryValue,
           value: `฿${summary.overview.inventoryValue.toLocaleString("th-TH")}`,
           icon: DollarSign,
           color: "text-purple-600",
@@ -73,13 +75,13 @@ export default function DashboardPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-zinc-900">{t.dashboard.title}</h1>
           <p className="mt-1 text-zinc-500">
-            Welcome back, {user?.name}. Realtime inventory overview.
+            {interpolate(t.dashboard.welcome, { name: user?.name ?? "" })}
           </p>
         </div>
         <Button variant="outline" onClick={loadDashboard} disabled={loading}>
-          {loading ? "Refreshing..." : "Refresh"}
+          {loading ? t.common.refreshing : t.common.refresh}
         </Button>
       </div>
 
@@ -114,7 +116,7 @@ export default function DashboardPage() {
           {/* Monthly Movement */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Monthly Movement</CardTitle>
+              <CardTitle className="text-lg">{t.dashboard.monthlyMovement}</CardTitle>
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-2 gap-4">
@@ -122,7 +124,7 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2">
                     <TrendingUp className="h-5 w-5 text-green-600" />
                     <span className="text-sm font-medium text-green-700">
-                      Stock In
+                      {t.dashboard.stockIn}
                     </span>
                   </div>
                   <p className="mt-2 text-2xl font-bold text-green-900">
@@ -133,7 +135,7 @@ export default function DashboardPage() {
                   <div className="flex items-center gap-2">
                     <TrendingDown className="h-5 w-5 text-red-600" />
                     <span className="text-sm font-medium text-red-700">
-                      Stock Out
+                      {t.dashboard.stockOut}
                     </span>
                   </div>
                   <p className="mt-2 text-2xl font-bold text-red-900">
@@ -147,11 +149,11 @@ export default function DashboardPage() {
           {/* Top Products */}
           <Card>
             <CardHeader>
-              <CardTitle className="text-lg">Top Moved Products (This Month)</CardTitle>
+              <CardTitle className="text-lg">{t.dashboard.topProducts}</CardTitle>
             </CardHeader>
             <CardContent>
               {summary.topProducts.length === 0 ? (
-                <p className="text-sm text-zinc-500">No movements this month.</p>
+                <p className="text-sm text-zinc-500">{t.dashboard.noMovements}</p>
               ) : (
                 <div className="space-y-3">
                   {summary.topProducts.map((product, index) => (
@@ -185,27 +187,27 @@ export default function DashboardPage() {
         <CardHeader className="flex flex-row items-center justify-between">
           <CardTitle className="text-lg flex items-center gap-2">
             <AlertTriangle className="h-5 w-5 text-red-600" />
-            Low Stock Alerts
+            {t.dashboard.lowStockAlerts}
           </CardTitle>
           {lowStockProducts.length > 0 && (
             <span className="rounded-full bg-red-100 px-2 py-1 text-xs font-medium text-red-700">
-              {lowStockProducts.length} items
+              {lowStockProducts.length} {t.dashboard.items}
             </span>
           )}
         </CardHeader>
         <CardContent>
           {lowStockProducts.length === 0 ? (
-            <p className="text-sm text-zinc-500">All products have sufficient stock.</p>
+            <p className="text-sm text-zinc-500">{t.dashboard.allSufficient}</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-zinc-200 text-left">
-                    <th className="pb-2 font-medium text-zinc-600">Product</th>
-                    <th className="pb-2 font-medium text-zinc-600">SKU</th>
-                    <th className="pb-2 font-medium text-zinc-600">Current Stock</th>
-                    <th className="pb-2 font-medium text-zinc-600">Minimum</th>
-                    <th className="pb-2 font-medium text-zinc-600 text-red-600">Shortage</th>
+                    <th className="pb-2 font-medium text-zinc-600">{t.dashboard.product}</th>
+                    <th className="pb-2 font-medium text-zinc-600">{t.dashboard.sku}</th>
+                    <th className="pb-2 font-medium text-zinc-600">{t.dashboard.currentStock}</th>
+                    <th className="pb-2 font-medium text-zinc-600">{t.dashboard.minimum}</th>
+                    <th className="pb-2 font-medium text-zinc-600 text-red-600">{t.dashboard.shortage}</th>
                   </tr>
                 </thead>
                 <tbody>

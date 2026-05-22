@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { api, ApiError } from "@/lib/api";
 import { isAdmin, getUser } from "@/lib/auth";
+import { useTranslation } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,6 +29,7 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function CategoriesPage() {
+  const { t } = useTranslation();
   const user = getUser();
   const admin = isAdmin(user);
   const [categories, setCategories] = useState<Category[]>([]);
@@ -108,13 +110,13 @@ export default function CategoriesPage() {
     <div>
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-zinc-900">Categories</h1>
-          <p className="mt-1 text-zinc-500">Manage product categories</p>
+          <h1 className="text-2xl font-bold text-zinc-900">{t.categories.title}</h1>
+          <p className="mt-1 text-zinc-500">{t.categories.subtitle}</p>
         </div>
         {admin && (
           <Button onClick={openCreate}>
             <Plus className="mr-2 h-4 w-4" />
-            Add Category
+            {t.categories.addCategory}
           </Button>
         )}
       </div>
@@ -128,14 +130,14 @@ export default function CategoriesPage() {
       <Modal
         open={modalOpen}
         onClose={closeModal}
-        title={editing ? "Edit Category" : "New Category"}
+        title={editing ? t.categories.editCategory : t.categories.addCategory}
       >
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="name">Name</Label>
+            <Label htmlFor="name">{t.categories.name}</Label>
             <Input
               id="name"
-              placeholder="e.g. Electronics"
+              placeholder={t.categories.namePlaceholder}
               {...register("name")}
             />
             {errors.name && (
@@ -143,10 +145,10 @@ export default function CategoriesPage() {
             )}
           </div>
           <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
+            <Label htmlFor="description">{t.categories.description}</Label>
             <Input
               id="description"
-              placeholder="Optional description"
+              placeholder={t.categories.descriptionPlaceholder}
               {...register("description")}
             />
           </div>
@@ -157,10 +159,10 @@ export default function CategoriesPage() {
           )}
           <div className="flex justify-end gap-2 pt-2">
             <Button type="button" variant="outline" onClick={closeModal}>
-              Cancel
+              {t.common.cancel}
             </Button>
             <Button type="submit" disabled={isSubmitting}>
-              {isSubmitting ? "Saving..." : "Save"}
+              {isSubmitting ? t.common.saving : t.common.save}
             </Button>
           </div>
         </form>
@@ -169,19 +171,19 @@ export default function CategoriesPage() {
       <Card className="mt-6">
         <CardContent className="p-0">
           {loading ? (
-            <p className="p-6 text-zinc-500">Loading...</p>
+            <p className="p-6 text-zinc-500">{t.common.loading}</p>
           ) : categories.length === 0 ? (
-            <p className="p-6 text-zinc-500">No categories yet.</p>
+            <p className="p-6 text-zinc-500">{t.categories.noCategories}</p>
           ) : (
             <table className="w-full text-sm text-zinc-900">
               <thead>
                 <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-zinc-600">
-                  <th className="px-6 py-3 font-semibold">Name</th>
-                  <th className="px-6 py-3 font-semibold">Description</th>
-                  <th className="px-6 py-3 font-semibold">Products</th>
+                  <th className="px-6 py-3 font-semibold">{t.categories.name}</th>
+                  <th className="px-6 py-3 font-semibold">{t.categories.description}</th>
+                  <th className="px-6 py-3 font-semibold">{t.nav.products}</th>
                   {admin && (
                     <th className="px-6 py-3 text-right font-semibold">
-                      Actions
+                      {t.common.actions}
                     </th>
                   )}
                 </tr>

@@ -2,12 +2,14 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { api, ApiError, InventoryMovement, Product } from "@/lib/api";
+import { useTranslation, interpolate } from "@/lib/i18n";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Download } from "lucide-react";
 
 export default function InventoryHistoryPage() {
+  const { t } = useTranslation();
   const [movements, setMovements] = useState<InventoryMovement[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [productId, setProductId] = useState("");
@@ -80,8 +82,8 @@ export default function InventoryHistoryPage() {
   return (
     <div>
       <div>
-        <h1 className="text-2xl font-bold text-zinc-900">Inventory History</h1>
-        <p className="mt-1 text-zinc-500">Track stock in and stock out movements</p>
+        <h1 className="text-2xl font-bold text-zinc-900">{t.inventory.title}</h1>
+        <p className="mt-1 text-zinc-500">{t.inventory.subtitle}</p>
       </div>
 
       <div className="mt-4 grid gap-3 md:grid-cols-5">
@@ -90,7 +92,7 @@ export default function InventoryHistoryPage() {
           value={productId}
           onChange={(e) => setProductId(e.target.value)}
         >
-          <option value="">All products</option>
+          <option value="">{t.inventory.allProducts}</option>
           {products.map((product) => (
             <option key={product.id} value={product.id}>
               {product.sku} — {product.name}
@@ -99,10 +101,10 @@ export default function InventoryHistoryPage() {
         </select>
         <Input type="date" value={from} onChange={(e) => setFrom(e.target.value)} />
         <Input type="date" value={to} onChange={(e) => setTo(e.target.value)} />
-        <Button onClick={() => loadMovements(1)}>Apply Filters</Button>
+        <Button onClick={() => loadMovements(1)}>{t.common.search}</Button>
         <Button variant="outline" onClick={handleExport}>
           <Download className="mr-2 h-4 w-4" />
-          Export CSV
+          {t.common.export}
         </Button>
       </div>
 
@@ -111,20 +113,20 @@ export default function InventoryHistoryPage() {
       <Card className="mt-6">
         <CardContent className="overflow-x-auto p-0">
           {loading ? (
-            <p className="p-6 text-zinc-500">Loading...</p>
+            <p className="p-6 text-zinc-500">{t.common.loading}</p>
           ) : movements.length === 0 ? (
-            <p className="p-6 text-zinc-500">No movements found.</p>
+            <p className="p-6 text-zinc-500">{t.inventory.noMovements}</p>
           ) : (
             <table className="w-full min-w-[900px] text-sm text-zinc-900">
               <thead>
                 <tr className="border-b border-zinc-200 bg-zinc-50 text-left text-zinc-600">
-                  <th className="px-4 py-3 font-semibold">Date</th>
-                  <th className="px-4 py-3 font-semibold">Type</th>
-                  <th className="px-4 py-3 font-semibold">Product</th>
-                  <th className="px-4 py-3 font-semibold">Quantity</th>
+                  <th className="px-4 py-3 font-semibold">{t.inventory.date}</th>
+                  <th className="px-4 py-3 font-semibold">{t.inventory.type}</th>
+                  <th className="px-4 py-3 font-semibold">{t.inventory.product}</th>
+                  <th className="px-4 py-3 font-semibold">{t.inventory.quantity}</th>
                   <th className="px-4 py-3 font-semibold">Before</th>
                   <th className="px-4 py-3 font-semibold">After</th>
-                  <th className="px-4 py-3 font-semibold">Created By</th>
+                  <th className="px-4 py-3 font-semibold">{t.common.name}</th>
                 </tr>
               </thead>
               <tbody>
@@ -152,11 +154,11 @@ export default function InventoryHistoryPage() {
       {totalPages > 1 && (
         <div className="mt-4 flex items-center justify-center gap-2">
           <Button variant="outline" size="sm" disabled={page <= 1} onClick={() => loadMovements(page - 1)}>
-            Previous
+            {t.inventory.prev}
           </Button>
-          <span className="text-sm text-zinc-500">Page {page} of {totalPages}</span>
+          <span className="text-sm text-zinc-500">{interpolate(t.inventory.page, { page, total: totalPages })}</span>
           <Button variant="outline" size="sm" disabled={page >= totalPages} onClick={() => loadMovements(page + 1)}>
-            Next
+            {t.inventory.next}
           </Button>
         </div>
       )}
